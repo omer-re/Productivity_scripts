@@ -1,0 +1,90 @@
+
+# change speed for audio
+ffmpeg -i input.mp3 -filter:a atempo=1.5 -vn output.mp3
+
+# change speed for video
+ffmpeg -i input.mp4 -filter_complex "[0:v]setpts=0.625*PTS[v];[0:a]atempo=1.6[a]" -map "[v]" -map "[a]" output.mp4
+
+# trim
+ffmpeg -i input.mp3 -ss 00:10:58 -to 00:14:40 output.mp3
+ffmpeg -ss 00:03:22 -t 00:05:20 -i "ראיון טלפוני רפאל.mp3" -acodec copy outputfile.mp3
+ffmpeg -i zoom_0.mp4 -ss 00:00:55 -to 00:13:05 Complex_moedA_tshirt.mp4
+
+# mp4 to GIF
+ffmpeg -i backupvid.mp4 -vf "fps=10,scale=320:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" -loop 0 output.gif
+# Video to GIF
+ffmpeg -i input.mkv output.gif
+
+# Extract audio from video
+ffmpeg -i input.mp4 -vn audio_only.mp3
+
+# Remove audio from video
+ffmpeg -i videoAndAudio.mp4 -c copy -an onlyVideo.mp4
+
+Good manual
+https://opensource.com/article/17/6/ffmpeg-convert-media-file-formats
+https://gist.github.com/steven2358/ba153c642fe2bb1e47485962df07c730
+https://medium.com/@prafullkumar77/ffmpeg-cheat-sheet-a1c6d503e9c3
+
+trim video
+os.system(f"ffmpeg -i {name} -ss {start} -t {end} -c copy start_of_output.mp4")
+
+Merge videos 
+https://trac.ffmpeg.org/wiki/Concatenate
+
+ffmpeg -i makyavelli2.mp4 -vn makyavelli2.mp3
+ffmpeg -i makyavelli1.mp4 -vn makyavelli1.mp3
+
+Reverse video
+ffmpeg -i osc.mp4 -vf reverse reversed.mp4
+
+# Download from HLS stream
+ffmpeg -i URL stream.mp4
+
+# resize video - with trimming danger
+ffmpeg -i in.avi -fs 100M out.avi
+
+# resize file size with compression- the "healthier" option to resize:   https://superuser.com/questions/1582867/how-to-compress-output-video-with-trim-using-ffmpeg
+ffmpeg -ss 823.2 -t 44.1 -i input.mp4 -ss 1074.1 -t 27.3 -i input.mp4 -filter_complex "[0:v][0:a][1:v][1:a]concat=n=2:v=1:a=1[v][a]" -map "[v]" -map "[a]" -c:v libx264 -crf 29 -preset slower output.mp4
+
+# compress video
+ffmpeg -i input1.mp4 -vcodec libx265 -crf 28 compressed_input1.mp4
+
+
+# Extract all frames from mp4 video file:
+ffmpeg -ss 00:00:00 -i EMER170108-173150-009683.MP4 -t 00:00:06 filename%05d.png
+
+
+# Adding Watermark on a video
+$ ffmpeg -i <video-file-Path>  \
+         -i <Wartermark-Image> -filter_complex \
+         "overlay=<Position>" \
+         -codec:a copy <output-video-file>
+		 Center:  (W-w)/2:(H-h)/2
+	Top Left: 5:5
+	Top right: W-w-5:5
+	Bottom right: W-w-5:H-h-5
+	Bottom left: 5:H-h-5
+ $ ffmpeg -i saveas.mp4 -i logo.png -filter_complex "overlay=5:5" -codec:a copy output.mp4
+ 
+ 
+ # ffmpeg command for ShareX screen recording to record chosen region of the screen and 2 audio cahnnels at the same time.
+ -rtbufsize 150M -f gdigrab -framerate $fps$ -offset_x $area_x$ -offset_y $area_y$ -video_size $area_width$x$area_height$ -draw_mouse $cursor$ -i desktop -f dshow -i audio="virtual-audio-capturer" -f dshow -i audio="Microphone Array (Realtek High Definition Audio(SST))" -filter_complex amix=inputs=2:duration=first:dropout_transition=3 -c:v libx264 -r $fps$ -preset ultrafast -tune zerolatency -crf 28 -pix_fmt yuv420p -movflags +faststart -c:a libmp3lame -qscale:a 4 -y "$output$"
+#works well, recording both audio channels and right region of video.
+
+# IMPROVEMENT:
+-rtbufsize 150M -f gdigrab -framerate $fps$ -offset_x $area_x$ -offset_y $area_y$ -video_size $area_width$x$area_height$ -draw_mouse $cursor$ -i desktop -f dshow -i audio="virtual-audio-capturer" -f dshow -i audio="Microphone Array (Realtek High Definition Audio(SST))" -f dshow -i audio="Headset (Jabra Elite Active 65t Hands-free AG Audio)" -f dshow -i audio="Headphones (Jabra Elite Active 65t stereo)" -filter_complex amix=inputs=2:duration=first:dropout_transition=3 -c:v libx264 -r 30 -preset ultrafast -tune zerolatency -crf 28 -pix_fmt yuv420p -movflags +faststart -c:a libmp3lame -qscale:a 4 -y "$output$"
+
+
+############### examples and drafts:
+
+# trim
+ffmpeg -i output3.mp4 -ss 00:04:25 -to 00:06:05 -c copy -an team_brief.mp4
+ffmpeg -i output.mp4 -filter_complex [0:v]setpts=0.2*PTS[v] -map "[v]" output2.mp4
+
+ffmpeg -i zoom_0.mp4 -c copy -an onlyVideo.mp4
+
+ffmpeg -i input.mp4 -filter_complex "[0:v]setpts=0.625*PTS[v];[0:a]atempo=1.6[a]" -map "[v]" -map "[a]" output.mp4
+
+
+C:\Users\omer.reuveni\Documents\zoom\2021-01-11 10.48.35 Missed Care (Pink) - Opening Day Meeting 94259209411>ffmpeg -i onlyVideo.mp4 -filter_complex [0:v]setpts=0.1*PTS[v] -map "[v]" output2.mp4
