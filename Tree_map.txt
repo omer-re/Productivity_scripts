@@ -1,0 +1,8 @@
+## Windows CMD Print tree map:
+TREE "path/to/folder" /A > dir_tree.txt
+
+## with files:
+TREE "path/to/folder" /F /A > dir_tree.txt
+
+
+TREE  "path/to/folder" /A > dir_tree.txt
