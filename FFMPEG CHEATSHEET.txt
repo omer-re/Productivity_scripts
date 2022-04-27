@@ -88,3 +88,6 @@ ffmpeg -i input.mp4 -filter_complex "[0:v]setpts=0.625*PTS[v];[0:a]atempo=1.6[a]
 
 
 C:\Users\omer.reuveni\Documents\zoom\2021-01-11 10.48.35 Missed Care (Pink) - Opening Day Meeting 94259209411>ffmpeg -i onlyVideo.mp4 -filter_complex [0:v]setpts=0.1*PTS[v] -map "[v]" output2.mp4
+
+ # DVD to MP4 (convert dvd files to mp4)
+ ffmpeg -i "concat:VTS_01_1.VOB|VTS_01_2.VOB|VTS_01_3.VOB|VTS_01_4.VOB" -codec:a copy -codec:v libx264 converted_movie.mp4
