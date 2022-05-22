@@ -15,6 +15,22 @@ ffmpeg -i backupvid.mp4 -vf "fps=10,scale=320:-1:flags=lanczos,split[s0][s1];[s0
 # Video to GIF
 ffmpeg -i input.mkv output.gif
 
+# folder of images to gif
+# first convert an image sequence to a movie
+# Slideshow video with one image per second
+1. make a txt file of all files. each line should be: file 'FILE NAME OR PATH'
+use [dir  /a:-d /o:n /b >files.txt] then add file 'FILENAME'
+2. ffmpeg -f concat -r 7 -i files.txt -crf 20 -vf fps=8,format=yuv420p video.mp4
+where -r is the frame rate (images per second)
+
+EXAMPLE for how it should look like:
+	file 2021_1122_001608_016.JPG
+	file 2021_1122_001613_017.JPG
+	file 2021_1122_001618_018.JPG
+	file 2021_1122_001623_019.JPG
+	file 2021_1122_001629_020.JPG
+
+
 # Extract audio from video
 ffmpeg -i input.mp4 -vn audio_only.mp3
 
@@ -54,6 +70,19 @@ ffmpeg -i input1.mp4 -vcodec libx265 -crf 28 compressed_input1.mp4
 # Extract all frames from mp4 video file:
 ffmpeg -ss 00:00:00 -i EMER170108-173150-009683.MP4 -t 00:00:06 filename%05d.png
 
+# Rotate video  source: https://stackoverflow.com/questions/3937387/rotating-videos-with-ffmpeg
+Rotate 90 clockwise:
+ffmpeg -i in.mov -vf "transpose=1" out.mov
+
+For the transpose parameter you can pass:
+0 = 90CounterCLockwise and Vertical Flip (default)
+1 = 90Clockwise
+2 = 90CounterClockwise
+3 = 90Clockwise and Vertical Flip
+Use -vf "transpose=2,transpose=2" for 180 degrees.
+Make sure you use a recent ffmpeg version from here (a static build will work fine).
+Note that this will re-encode the audio and video parts. You can usually copy the audio without touching it, by using -c:a copy. To change the video quality, set the bitrate (for example with -b:v 1M) or have a look at the H.264 encoding g
+
 
 # Adding Watermark on a video
 $ ffmpeg -i <video-file-Path>  \
@@ -88,6 +117,17 @@ ffmpeg -i input.mp4 -filter_complex "[0:v]setpts=0.625*PTS[v];[0:a]atempo=1.6[a]
 
 
 C:\Users\omer.reuveni\Documents\zoom\2021-01-11 10.48.35 Missed Care (Pink) - Opening Day Meeting 94259209411>ffmpeg -i onlyVideo.mp4 -filter_complex [0:v]setpts=0.1*PTS[v] -map "[v]" output2.mp4
+
+
+## youtube-dl download specific time:
+ffmpeg $(youtube-dl -g 'https://www.youtube.com/watch?v=oHg5SJYRHA0' | sed 's/^/-ss 00:05 -i /') -t 01:00 -c copy out.mkv
+youtube-dl -x --postprocessor-args "-ss 00:13:00.00 -t 00:04:00.00" https://youtu.be/...
+youtube-dl --postprocessor-args "-ss 0:0:15 -to 0:1:20" '[video_URL]'
+
+## youtube dl specify output filename:
+--output "can't ignore that.%(ext)s"
+youtube-dl --postprocessor-args "-ss 0:6:19 -to 0:6:24" --output "can't ignore that.%(ext)s" https://youtu.be/3RkC309_Ako
+
 
  # DVD to MP4 (convert dvd files to mp4)
  ffmpeg -i "concat:VTS_01_1.VOB|VTS_01_2.VOB|VTS_01_3.VOB|VTS_01_4.VOB" -codec:a copy -codec:v libx264 converted_movie.mp4
