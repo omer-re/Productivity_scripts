@@ -41,8 +41,12 @@ def merge(path, output_filename):
 if __name__ == "__main__":
     # Add more options if you like
 
-    path=input("enter path: ")
-    output_filename=input("enter output filename: ")
+    path=input("enter path: (leave empty for current working folder)")
+    if len(path)<2:
+        path= os.getcwd()
+    output_filename=input("enter output filename: (leave empty for default name)")
+    if len(output_filename)<2:
+        output_filename= ''.join("merged_",os.path.split(path)[1])
     dest_output=os.path.join(path,output_filename+".pdf")
     merge(path, dest_output)
 
