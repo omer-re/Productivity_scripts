@@ -14,6 +14,10 @@ ffmpeg -i zoom_0.mp4 -ss 00:00:55 -to 00:13:05 Complex_moedA_tshirt.mp4
 ffmpeg -i noisy_file.mp4 -af "volume=400, highpass=f=200, lowpass=f=3000, afftdn=nf=-25" -vcodec copy filtered_file.mp4
 good ref: https://superuser.com/questions/733061/reduce-background-noise-and-optimize-the-speech-from-an-audio-clip-using-ffmpeg
 
+# example ffmpeg command that optimizes an MP3 file for speech and equalizes the volume:
+`ffmpeg -i podcast.mp3 -ac 1 -filter:a "highpass=f=200, lowpass=f=3000, equalizer=f=300:t=h:width_type=h:width=100:g=-15, dynaudnorm" -ar 44100 -b:a 64k optimized.mp3`
+
+
 # mp4 to GIF
 ffmpeg -i backupvid.mp4 -vf "fps=10,scale=320:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" -loop 0 output.gif
 # Video to GIF
