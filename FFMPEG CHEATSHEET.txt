@@ -139,3 +139,6 @@ youtube-dl --postprocessor-args "-ss 0:6:19 -to 0:6:24" --output "can't ignore t
 
  # DVD to MP4 (convert dvd files to mp4)
  ffmpeg -i "concat:VTS_01_1.VOB|VTS_01_2.VOB|VTS_01_3.VOB|VTS_01_4.VOB" -codec:a copy -codec:v libx264 converted_movie.mp4
+
+# formatted subtitles
+ffmpeg -i "video file.mkv" -vf "subtitles='file.srt':force_style='Style=S2,Fontname=Tahoma,Fontsize=22,PrimaryColour=&fff2cc&,Bold=1,Alignment=2,BorderStyle=1,Outline=2,MarginV=50'" -c:v libx264 -c:a copy output_video.mp4
