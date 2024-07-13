@@ -7,7 +7,7 @@ ffmpeg -i input.mp4 -filter_complex "[0:v]setpts=0.625*PTS[v];[0:a]atempo=1.6[a]
 
 # trim
 ffmpeg -i input.mp3 -ss 00:10:58 -to 00:14:40 output.mp3
-ffmpeg -ss 00:03:22 -t 00:05:20 -i "ראיון טלפוני רפאל.mp3" -acodec copy outputfile.mp3
+ffmpeg -ss 00:03:22 -t 00:05:20 -i "ראיון טלפוני.mp3" -acodec copy outputfile.mp3
 ffmpeg -i zoom_0.mp4 -ss 00:00:55 -to 00:13:05 Complex_moedA_tshirt.mp4
 
 # noise reduction from file:
@@ -141,4 +141,5 @@ youtube-dl --postprocessor-args "-ss 0:6:19 -to 0:6:24" --output "can't ignore t
  ffmpeg -i "concat:VTS_01_1.VOB|VTS_01_2.VOB|VTS_01_3.VOB|VTS_01_4.VOB" -codec:a copy -codec:v libx264 converted_movie.mp4
 
 # formatted subtitles
-ffmpeg -i "video file.mkv" -vf "subtitles='file.srt':force_style='Style=S2,Fontname=Tahoma,Fontsize=22,PrimaryColour=&fff2cc&,Bold=1,Alignment=2,BorderStyle=1,Outline=2,MarginV=50'" -c:v libx264 -c:a copy output_video.mp4
+ffmpeg -i "Omri Ronen Kaplan 13-07-24.mkv" -vf "subtitles='Omri_Ronen_kaplan_13-07-24.mp4.srt':force_style='Fontname=Tahoma,Fontsize=22,PrimaryColour=&HCCF2FFFF,Bold=1,Alignment=2,BorderStyle=1,Outline=2,MarginV=50'" -c:v libx264 -c:a copy output_video.mp4
+
