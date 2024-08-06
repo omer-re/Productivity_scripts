@@ -1,0 +1,90 @@
+// Enter teams on web
+// enter a chat 
+// run the following script in the dev tools
+// scroll through the chat as it records it and will offer your to download it as json after 2 minutes.
+
+(async function() {
+    const chatPaneSelector = 'div#chat-pane-list';
+    const chatPane = document.querySelector(chatPaneSelector);
+
+    if (!chatPane) {
+        console.error('Chat pane not found.');
+        return;
+    }
+
+    // Function to wait for a given number of milliseconds
+    const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+    const chatData = [];
+    let lastLogTime = Date.now();
+
+    // Function to fetch and store messages
+    const fetchMessages = () => {
+        const chatItems = document.querySelectorAll('div[data-tid="chat-pane-item"]');
+        chatItems.forEach(item => {
+            // Extract the user name
+            const userElement = item.querySelector('div[role="heading"]');
+            const user = userElement ? userElement.innerText.split(' by ')[1] || 'Unknown User' : 'Unknown User';
+
+            // Extract the timestamp
+            const timestampElement = item.querySelector('time');
+            const timestamp = timestampElement ? timestampElement.getAttribute('datetime') : 'Unknown Time';
+
+            // Extract the message text
+            const messageElement = item.querySelector('div[aria-label][class*="fui-Primitive"]');
+            const text = messageElement ? Array.from(messageElement.querySelectorAll('p')).map(p => p.innerText).join('\n') : 'No Text';
+
+            // Avoid adding duplicate messages
+            if (!chatData.some(msg => msg.timestamp === timestamp && msg.text === text)) {
+                chatData.push({ user, timestamp, text });
+            }
+        });
+    };
+
+    // Monitor and fetch messages for 2 minutes
+    const monitorAndFetchMessages = async () => {
+        const startTime = Date.now();
+        const duration = 120000; // 2 minutes in milliseconds
+
+        while (Date.now() - startTime < duration) {
+            fetchMessages();
+            await wait(1000); // Check for new messages every second
+            
+            // Log a message every 10 seconds to indicate the script is still running
+            if (Date.now() - lastLogTime >= 10000) {
+                console.log('Script is still running...');
+                lastLogTime = Date.now();
+            }
+        }
+    };
+
+    // Load messages by monitoring for 2 minutes
+    await monitorAndFetchMessages();
+
+    // Convert the extracted data to JSON
+    const chatDataJSON = JSON.stringify(chatData, null, 2);
+
+    // Log the JSON data to the console
+    console.log(chatDataJSON);
+
+    // Create a Blob from the JSON string, properly handling encoding
+    const blob = new Blob([chatDataJSON], { type: 'application/json;charset=utf-8' });
+
+    // Create a link element
+    const link = document.createElement('a');
+
+    // Set the download attribute with a filename
+    link.download = 'chatData.json';
+
+    // Create a URL for the Blob and set it as the href attribute
+    link.href = window.URL.createObjectURL(blob);
+
+    // Append the link to the body
+    document.body.appendChild(link);
+
+    // Programmatically click the link to trigger the download
+    link.click();
+
+    // Remove the link from the document
+    document.body.removeChild(link);
+})();
